@@ -1,5 +1,4 @@
 package model;
-import java.util.Arrays;
 
 public class CryptoSimulator {
     public byte[] hash160(byte[] data){
