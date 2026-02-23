@@ -1,4 +1,5 @@
 package model;
+import model.OpCode;
 
 import java.util.*;
 
@@ -42,7 +43,7 @@ public class ScriptInterpreter {
             return;
         }
 
-        switch (item.getOpcode()) {
+        switch (item.getOpCode()) {
 
             case OP_0:
                 stack.push(new byte[]{0});
