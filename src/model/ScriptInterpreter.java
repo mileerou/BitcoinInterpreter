@@ -1,10 +1,3 @@
-///*
-/// Autores: Junior, Milena y Camila
-// Clase ScriptInterpreter
-// Esta clase es responsable de ejecutar un script de Bitcoin, interpretando cada instrucción y manipulando la pila de datos
-// según las reglas del lenguaje de scripting de Bitcoin. 
-// */
-
 package model;
 
 import java.util.*;
@@ -15,6 +8,10 @@ public class ScriptInterpreter {
     private List<Item> script;
     private CryptoSimulator crypto;
     private boolean traceMode;
+
+    // @author Junior Lancerio
+    private boolean ejecutando = true;
+    private Stack<Boolean> controlStack = new Stack<>();
 
     public ScriptInterpreter(List<Item> script) {
         this.script = script;
@@ -43,6 +40,14 @@ public class ScriptInterpreter {
     }
 
     private void executeInstruction(Item item) {
+
+        // @author Junior Lancerio
+        if (!ejecutando && item.isOperation() &&
+                item.getOpCode() != OpCode.OP_IF &&
+                item.getOpCode() != OpCode.OP_ELSE &&
+                item.getOpCode() != OpCode.OP_ENDIF) {
+            return;
+        }
 
         if (!item.isOperation()) {
             stack.push(item.getData());
@@ -98,8 +103,10 @@ public class ScriptInterpreter {
                 boolean valid = crypto.checkSig(sig, pubKey);
                 stack.push(valid ? new byte[]{1} : new byte[]{0});
                 break;
+
             case OP_SWAP:
-                //* Requiere al menos dos elementos en la pila. Intercambia el elemento superior con el segundo elemento de la pila.
+                //*
+                // Requiere al menos dos elementos en la pila. Intercambia el elemento superior con el segundo elemento de la pila.
                 // @author Milena
                 //  */
                 requireStackSize(2);
@@ -108,6 +115,7 @@ public class ScriptInterpreter {
                 stack.push(top);
                 stack.push(second);
                 break;
+
             case OP_OVER:
                 //*
                 // Requiere al menos dos elementos en la pila. Empuja una copia del segundo elemento de la pila.
@@ -117,6 +125,7 @@ public class ScriptInterpreter {
                 byte[] secondToTop = stack.get(stack.size() - 2);
                 stack.push(secondToTop);
                 break;
+
             case OP_NOT:
                 //*
                 // Requiere al menos un elemento en la pila. Empuja el negado del elemento superior. Si el elemento es 0, empuja 1; de lo contrario, empuja 0.
@@ -126,6 +135,7 @@ public class ScriptInterpreter {
                 byte[] value = stack.pop();
                 stack.push(value[0] == 0 ? new byte[]{1} : new byte[]{0});
                 break;
+
             case OP_BOOLAND:
                 //*
                 // Requiere al menos dos elementos en la pila. Empuja 1 si ambos elementos son distintos de 0; de lo contrario, empuja 0.
@@ -136,6 +146,7 @@ public class ScriptInterpreter {
                 byte[] val2 = stack.pop();
                 stack.push((val1[0] != 0 && val2[0] != 0) ? new byte[]{1} : new byte[]{0});
                 break;
+
             case OP_BOOLOR:
                 //*
                 // Requiere al menos dos elementos en la pila. Empuja 1 si al menos uno de los elementos es distinto de 0; de lo contrario, empuja 0.
@@ -146,6 +157,7 @@ public class ScriptInterpreter {
                 byte[] v2 = stack.pop();
                 stack.push((v1[0] != 0 || v2[0] != 0) ? new byte[]{1} : new byte[]{0});
                 break;
+
             case OP_ADD:
                 //*
                 // Requiere al menos dos elementos en la pila. Empuja la suma de los dos elementos superiores.
@@ -157,6 +169,7 @@ public class ScriptInterpreter {
                 int sum = (num1[0] & 0xFF) + (num2[0] & 0xFF);
                 stack.push(new byte[]{(byte) sum});
                 break;
+
             case OP_SUB:
                 //*
                 // Requiere al menos dos elementos en la pila. Empuja la diferencia de los dos elementos superiores (segundo elemento menos el elemento superior).
@@ -167,6 +180,81 @@ public class ScriptInterpreter {
                 byte[] n2 = stack.pop();
                 int diff = (n1[0] & 0xFF) - (n2[0] & 0xFF);
                 stack.push(new byte[]{(byte) diff});
+                break;
+
+            case OP_IF:
+                //*
+                // Requiere al menos un elemento en la pila. Evalúa si es distinto de 0 para ejecutar el bloque IF.
+                // @author Junior Lancerio
+                //  */
+                requireStackSize(1);
+                byte[] condicion = stack.pop();
+                boolean resultadoIf = condicion[0] != 0;
+                controlStack.push(ejecutando);
+                ejecutando = ejecutando && resultadoIf;
+                break;
+
+            case OP_ELSE:
+                //*
+                // Invierte la ejecución del bloque IF actual.
+                // @author Junior Lancerio
+                //  */
+                if (controlStack.isEmpty()) {
+                    throw new RuntimeException("OP_ELSE sin OP_IF");
+                }
+                boolean previo = controlStack.peek();
+                ejecutando = previo && !ejecutando;
+                break;
+
+            case OP_ENDIF:
+                //*
+                // Finaliza el bloque condicional.
+                // @author Junior Lancerio
+                //  */
+                if (controlStack.isEmpty()) {
+                    throw new RuntimeException("OP_ENDIF sin OP_IF");
+                }
+                ejecutando = controlStack.pop();
+                break;
+
+            case OP_SHA128:
+                //*
+                // Requiere al menos un elemento en la pila. Aplica un hash simulado de 128 bits.
+                // @author Junior Lancerio
+                //  */
+                requireStackSize(1);
+                byte[] sha128Data = stack.pop();
+                stack.push(crypto.sha128(sha128Data));
+                break;
+
+            case OP_SHA256:
+                //*
+                // Requiere al menos un elemento en la pila. Aplica un hash simulado de 256 bits.
+                // @author Junior Lancerio
+                //  */
+                requireStackSize(1);
+                byte[] sha256Data = stack.pop();
+                stack.push(crypto.sha256(sha256Data));
+                break;
+
+            case OP_HASH128:
+                //*
+                // Requiere al menos un elemento en la pila. Aplica doble hash de 128 bits.
+                // @author Junior Lancerio
+                //  */
+                requireStackSize(1);
+                byte[] hash128Data = stack.pop();
+                stack.push(crypto.hash128(hash128Data));
+                break;
+
+            case OP_HASH256:
+                //*
+                // Requiere al menos un elemento en la pila. Aplica doble hash de 256 bits.
+                // @author Junior Lancerio
+                //  */
+                requireStackSize(1);
+                byte[] hash256Data = stack.pop();
+                stack.push(crypto.hash256(hash256Data));
                 break;
         }
     }
