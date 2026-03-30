@@ -1,4 +1,8 @@
 package model;
+//*
+// Clase que representa los códigos de operación (opcodes) utilizados en el interpreter
+//  */
+
 
 public enum OpCode {
     OP_0,
@@ -13,7 +17,7 @@ public enum OpCode {
     OP_OVER,
     OP_NOT,
     OP_BOOLAND,
-    OP,BOOLOR,
+    OP_BOOLOR,
     OP_ADD,
     OP_SUB,
     OP_NUMEQUALVERIFY,

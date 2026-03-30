@@ -1,3 +1,10 @@
+///*
+/// Autores: Junior, Milena y Camila
+// Clase ScriptInterpreter
+// Esta clase es responsable de ejecutar un script de Bitcoin, interpretando cada instrucción y manipulando la pila de datos
+// según las reglas del lenguaje de scripting de Bitcoin. 
+// */
+
 package model;
 
 import java.util.*;
@@ -90,6 +97,76 @@ public class ScriptInterpreter {
                 byte[] sig = stack.pop();
                 boolean valid = crypto.checkSig(sig, pubKey);
                 stack.push(valid ? new byte[]{1} : new byte[]{0});
+                break;
+            case OP_SWAP:
+                //* Requiere al menos dos elementos en la pila. Intercambia el elemento superior con el segundo elemento de la pila.
+                // @author Milena
+                //  */
+                requireStackSize(2);
+                byte[] top = stack.pop();
+                byte[] second = stack.pop();
+                stack.push(top);
+                stack.push(second);
+                break;
+            case OP_OVER:
+                //*
+                // Requiere al menos dos elementos en la pila. Empuja una copia del segundo elemento de la pila.
+                // @author Milena
+                //  */
+                requireStackSize(2);
+                byte[] secondToTop = stack.get(stack.size() - 2);
+                stack.push(secondToTop);
+                break;
+            case OP_NOT:
+                //*
+                // Requiere al menos un elemento en la pila. Empuja el negado del elemento superior. Si el elemento es 0, empuja 1; de lo contrario, empuja 0.
+                // @author Milena
+                //  */
+                requireStackSize(1);
+                byte[] value = stack.pop();
+                stack.push(value[0] == 0 ? new byte[]{1} : new byte[]{0});
+                break;
+            case OP_BOOLAND:
+                //*
+                // Requiere al menos dos elementos en la pila. Empuja 1 si ambos elementos son distintos de 0; de lo contrario, empuja 0.
+                // @author Milena
+                //  */
+                requireStackSize(2);
+                byte[] val1 = stack.pop();
+                byte[] val2 = stack.pop();
+                stack.push((val1[0] != 0 && val2[0] != 0) ? new byte[]{1} : new byte[]{0});
+                break;
+            case OP_BOOLOR:
+                //*
+                // Requiere al menos dos elementos en la pila. Empuja 1 si al menos uno de los elementos es distinto de 0; de lo contrario, empuja 0.
+                // @author Milena
+                //  */
+                requireStackSize(2);
+                byte[] v1 = stack.pop();
+                byte[] v2 = stack.pop();
+                stack.push((v1[0] != 0 || v2[0] != 0) ? new byte[]{1} : new byte[]{0});
+                break;
+            case OP_ADD:
+                //*
+                // Requiere al menos dos elementos en la pila. Empuja la suma de los dos elementos superiores.
+                // @author Milena
+                //  */
+                requireStackSize(2);
+                byte[] num1 = stack.pop();
+                byte[] num2 = stack.pop();
+                int sum = (num1[0] & 0xFF) + (num2[0] & 0xFF);
+                stack.push(new byte[]{(byte) sum});
+                break;
+            case OP_SUB:
+                //*
+                // Requiere al menos dos elementos en la pila. Empuja la diferencia de los dos elementos superiores (segundo elemento menos el elemento superior).
+                // @author Milena
+                //  */
+                requireStackSize(2);
+                byte[] n1 = stack.pop();
+                byte[] n2 = stack.pop();
+                int diff = (n1[0] & 0xFF) - (n2[0] & 0xFF);
+                stack.push(new byte[]{(byte) diff});
                 break;
         }
     }
