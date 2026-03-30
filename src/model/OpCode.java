@@ -3,7 +3,6 @@ package model;
 // Clase que representa los códigos de operación (opcodes) utilizados en el interpreter
 //  */
 
-
 public enum OpCode {
     OP_0,
     OP_1,
@@ -23,7 +22,7 @@ public enum OpCode {
     OP_NUMEQUALVERIFY,
     OP_LESSTHAN,
     OP_GREATERTHAN,
-    OP_LESSTHANOREQUAL,,
+    OP_LESSTHANOREQUAL,
     OP_GREATERTHANOREQUAL,
     OP_IF,
     OP_NOTIF,
@@ -31,7 +30,9 @@ public enum OpCode {
     OP_ENDIF,
     OP_VERIFY,
     OP_RETURN,
+    OP_SHA128,
     OP_SHA256,
+    OP_HASH128,
     OP_HASH256,
     OP_CHECKSIGVERIFY
 }
