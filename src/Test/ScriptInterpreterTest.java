@@ -98,6 +98,227 @@ public class ScriptInterpreterTest {
     }
 
     @Test
+    public void testNumEqualVerifySuccess() {
+        //*
+        // Verifica que OP_NUMEQUALVERIFY no falle cuando los dos valores son iguales.
+        // @author Camila Da Silva
+        //  */
+        List<Item> script = new ArrayList<>();
+
+        script.add(new Item(new byte[]{5}));
+        script.add(new Item(new byte[]{5}));
+        script.add(new Item(OpCode.OP_NUMEQUALVERIFY));
+        script.add(new Item(OpCode.OP_1));
+
+        ScriptInterpreter interpreter = new ScriptInterpreter(script);
+        boolean result = interpreter.execute();
+
+        assertTrue(result);
+    }
+
+    @Test
+    public void testNumEqualVerifyFails() {
+        //*
+        // Verifica que OP_NUMEQUALVERIFY falle cuando los dos valores son distintos.
+        // @author Camila Da Silva
+        //  */
+        List<Item> script = new ArrayList<>();
+
+        script.add(new Item(new byte[]{3}));
+        script.add(new Item(new byte[]{7}));
+        script.add(new Item(OpCode.OP_NUMEQUALVERIFY));
+        script.add(new Item(OpCode.OP_1));
+
+        ScriptInterpreter interpreter = new ScriptInterpreter(script);
+        boolean result = interpreter.execute();
+
+        assertFalse(result);
+    }
+
+    @Test
+    public void testLessThanTrue() {
+        //*
+        // Verifica que OP_LESSTHAN empuje 1 cuando el segundo elemento es menor que el superior.
+        // @author Camila Da Silva
+        //  */
+        List<Item> script = new ArrayList<>();
+
+        script.add(new Item(new byte[]{3})); // segundo elemento (a)
+        script.add(new Item(new byte[]{7})); // elemento superior (b)
+        script.add(new Item(OpCode.OP_LESSTHAN)); // 3 < 7 → empuja 1
+
+        ScriptInterpreter interpreter = new ScriptInterpreter(script);
+        boolean result = interpreter.execute();
+
+        assertTrue(result);
+    }
+
+    @Test
+    public void testLessThanFalse() {
+        //*
+        // Verifica que OP_LESSTHAN empuje 0 cuando el segundo elemento no es menor que el superior.
+        // @author Camila Da Silva
+        //  */
+        List<Item> script = new ArrayList<>();
+
+        script.add(new Item(new byte[]{9})); // segundo elemento (a)
+        script.add(new Item(new byte[]{3})); // elemento superior (b)
+        script.add(new Item(OpCode.OP_LESSTHAN)); // 9 < 3 → empuja 0
+
+        ScriptInterpreter interpreter = new ScriptInterpreter(script);
+        boolean result = interpreter.execute();
+
+        assertFalse(result);
+    }
+
+    @Test
+    public void testGreaterThanTrue() {
+        //*
+        // Verifica que OP_GREATERTHAN empuje 1 cuando el segundo elemento es mayor que el superior.
+        // @author Camila Da Silva
+        //  */
+        List<Item> script = new ArrayList<>();
+
+        script.add(new Item(new byte[]{9})); // segundo elemento (a)
+        script.add(new Item(new byte[]{3})); // elemento superior (b)
+        script.add(new Item(OpCode.OP_GREATERTHAN)); // 9 > 3 → empuja 1
+
+        ScriptInterpreter interpreter = new ScriptInterpreter(script);
+        boolean result = interpreter.execute();
+
+        assertTrue(result);
+    }
+
+    @Test
+    public void testGreaterThanFalse() {
+        //*
+        // Verifica que OP_GREATERTHAN empuje 0 cuando el segundo elemento no es mayor que el superior.
+        // @author Camila Da Silva
+        //  */
+        List<Item> script = new ArrayList<>();
+
+        script.add(new Item(new byte[]{2})); // segundo elemento (a)
+        script.add(new Item(new byte[]{8})); // elemento superior (b)
+        script.add(new Item(OpCode.OP_GREATERTHAN)); // 2 > 8 → empuja 0
+
+        ScriptInterpreter interpreter = new ScriptInterpreter(script);
+        boolean result = interpreter.execute();
+
+        assertFalse(result);
+    }
+
+    @Test
+    public void testLessThanOrEqualTrue() {
+        //*
+        // Verifica que OP_LESSTHANOREQUAL empuje 1 cuando los valores son iguales.
+        // @author Camila Da Silva
+        //  */
+        List<Item> script = new ArrayList<>();
+
+        script.add(new Item(new byte[]{5})); // segundo elemento (a)
+        script.add(new Item(new byte[]{5})); // elemento superior (b)
+        script.add(new Item(OpCode.OP_LESSTHANOREQUAL)); // 5 <= 5 → empuja 1
+
+        ScriptInterpreter interpreter = new ScriptInterpreter(script);
+        boolean result = interpreter.execute();
+
+        assertTrue(result);
+    }
+
+    @Test
+    public void testLessThanOrEqualFalse() {
+        //*
+        // Verifica que OP_LESSTHANOREQUAL empuje 0 cuando el segundo elemento es mayor que el superior.
+        // @author Camila Da Silva
+        //  */
+        List<Item> script = new ArrayList<>();
+
+        script.add(new Item(new byte[]{8})); // segundo elemento (a)
+        script.add(new Item(new byte[]{4})); // elemento superior (b)
+        script.add(new Item(OpCode.OP_LESSTHANOREQUAL)); // 8 <= 4 → empuja 0
+
+        ScriptInterpreter interpreter = new ScriptInterpreter(script);
+        boolean result = interpreter.execute();
+
+        assertFalse(result);
+    }
+
+    @Test
+    public void testGreaterThanOrEqualTrue() {
+        //*
+        // Verifica que OP_GREATERTHANOREQUAL empuje 1 cuando los valores son iguales.
+        // @author Camila Da Silva
+        //  */
+        List<Item> script = new ArrayList<>();
+
+        script.add(new Item(new byte[]{5})); // segundo elemento (a)
+        script.add(new Item(new byte[]{5})); // elemento superior (b)
+        script.add(new Item(OpCode.OP_GREATERTHANOREQUAL)); // 5 >= 5 → empuja 1
+
+        ScriptInterpreter interpreter = new ScriptInterpreter(script);
+        boolean result = interpreter.execute();
+
+        assertTrue(result);
+    }
+
+    @Test
+    public void testGreaterThanOrEqualFalse() {
+        //*
+        // Verifica que OP_GREATERTHANOREQUAL empuje 0 cuando el segundo elemento es menor que el superior.
+        // @author Camila Da Silva
+        //  */
+        List<Item> script = new ArrayList<>();
+
+        script.add(new Item(new byte[]{2})); // segundo elemento (a)
+        script.add(new Item(new byte[]{9})); // elemento superior (b)
+        script.add(new Item(OpCode.OP_GREATERTHANOREQUAL)); // 2 >= 9 → empuja 0
+
+        ScriptInterpreter interpreter = new ScriptInterpreter(script);
+        boolean result = interpreter.execute();
+
+        assertFalse(result);
+    }
+
+    @Test
+    public void testNotIfTrueExecutes() {
+        //*
+        // Verifica que OP_NOTIF ejecute el bloque cuando la condición es falsa (0).
+        // @author Camila Da Silva
+        //  */
+        List<Item> script = new ArrayList<>();
+
+        script.add(new Item(OpCode.OP_0));
+        script.add(new Item(OpCode.OP_NOTIF));
+        script.add(new Item(OpCode.OP_1));
+        script.add(new Item(OpCode.OP_ENDIF));
+
+        ScriptInterpreter interpreter = new ScriptInterpreter(script);
+        boolean result = interpreter.execute();
+
+        assertTrue(result);
+    }
+
+    @Test
+    public void testNotIfFalseSkips() {
+        //*
+        // Verifica que OP_NOTIF ignore el bloque cuando la condición es verdadera (1).
+        // @author Camila Da Silva
+        //  */
+        List<Item> script = new ArrayList<>();
+
+        script.add(new Item(OpCode.OP_1));
+        script.add(new Item(OpCode.OP_NOTIF));
+        script.add(new Item(OpCode.OP_0));
+        script.add(new Item(OpCode.OP_ENDIF));
+        script.add(new Item(OpCode.OP_1));
+
+        ScriptInterpreter interpreter = new ScriptInterpreter(script);
+        boolean result = interpreter.execute();
+
+        assertTrue(result);
+    }
+
+    @Test
     public void testIfTrueExecutes() {
         //*
         // Verifica que OP_IF ejecute el bloque cuando la condición es verdadera.
