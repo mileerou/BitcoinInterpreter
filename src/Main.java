@@ -14,7 +14,6 @@ public class Main {
         byte[] sig = {1,2,3,4};
         byte[] pubKey = {5,6,7,8};
 
-        // hash esperado (debe coincidir con hash160(pubKey))
         CryptoSimulator crypto = new CryptoSimulator();
         byte[] pubKeyHash = crypto.hash160(pubKey);
 
@@ -28,24 +27,37 @@ public class Main {
         script.add(new Item(pubKeyHash));
         script.add(new Item(OpCode.OP_EQUALVERIFY));
 
-        // Condicional (demo)
+        // Condicional
         script.add(new Item(OpCode.OP_1)); // condición verdadera
         script.add(new Item(OpCode.OP_IF));
 
-        // Si entra al IF = valida firma
         script.add(new Item(OpCode.OP_CHECKSIG));
 
         script.add(new Item(OpCode.OP_ELSE));
-
-        // Si fuera falso = empuja 0 (fallo)
         script.add(new Item(OpCode.OP_0));
 
         script.add(new Item(OpCode.OP_ENDIF));
 
-        // Ejemplo extra
-        script.add(new Item(new byte[]{9,9,9}));
-        script.add(new Item(OpCode.OP_SHA256));
+        // Prueba de lógica
+        script.add(new Item(OpCode.OP_1));
+        script.add(new Item(OpCode.OP_0));
+        script.add(new Item(OpCode.OP_BOOLOR));
 
+        // Prueba aritmética
+        script.add(new Item(new byte[]{2}));
+        script.add(new Item(new byte[]{3}));
+        script.add(new Item(OpCode.OP_ADD));
+
+        // Prueba de pila
+        script.add(new Item(new byte[]{9}));
+        script.add(new Item(new byte[]{8}));
+        script.add(new Item(OpCode.OP_SWAP));
+
+        // Prueba de hash avanzado
+        script.add(new Item(new byte[]{1,2,3}));
+        script.add(new Item(OpCode.OP_HASH256));
+
+        // Ejecutar
         ScriptController controller = new ScriptController(script);
         controller.ejecutarScript();
     }
