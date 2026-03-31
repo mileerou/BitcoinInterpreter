@@ -9,6 +9,132 @@ import model.*;
 public class ScriptInterpreterTest {
 
     @Test
+    public void testSwapOperation() {
+        //*
+        // Verifica que OP_SWAP intercambie los dos elementos superiores.
+        // @author Junior Lancerio
+        //  */
+        List<Item> script = new ArrayList<>();
+
+        script.add(new Item(new byte[]{1}));
+        script.add(new Item(new byte[]{2}));
+        script.add(new Item(OpCode.OP_SWAP));
+        script.add(new Item(OpCode.OP_EQUAL));
+
+        ScriptInterpreter interpreter = new ScriptInterpreter(script);
+        boolean result = interpreter.execute();
+
+        assertFalse(result);
+    }
+
+    @Test
+    public void testOverOperation() {
+        //*
+        // Verifica que OP_OVER copie el segundo elemento al tope de la pila.
+        // @author Junior Lancerio
+        //  */
+        List<Item> script = new ArrayList<>();
+
+        script.add(new Item(new byte[]{1}));
+        script.add(new Item(new byte[]{2}));
+        script.add(new Item(OpCode.OP_OVER));
+        script.add(new Item(OpCode.OP_EQUAL));
+
+        ScriptInterpreter interpreter = new ScriptInterpreter(script);
+        boolean result = interpreter.execute();
+
+        assertFalse(result);
+    }
+
+    @Test
+    public void testNotOperation() {
+        //*
+        // Verifica que OP_NOT invierta el valor lógico del elemento superior.
+        // @author Junior Lancerio
+        //  */
+        List<Item> script = new ArrayList<>();
+
+        script.add(new Item(OpCode.OP_0));
+        script.add(new Item(OpCode.OP_NOT));
+
+        ScriptInterpreter interpreter = new ScriptInterpreter(script);
+        boolean result = interpreter.execute();
+
+        assertTrue(result);
+    }
+
+    @Test
+    public void testBoolAndOperation() {
+        //*
+        // Verifica que OP_BOOLAND retorne 1 cuando ambos valores son verdaderos.
+        // @author Junior Lancerio
+        //  */
+        List<Item> script = new ArrayList<>();
+
+        script.add(new Item(OpCode.OP_1));
+        script.add(new Item(OpCode.OP_1));
+        script.add(new Item(OpCode.OP_BOOLAND));
+
+        ScriptInterpreter interpreter = new ScriptInterpreter(script);
+        boolean result = interpreter.execute();
+
+        assertTrue(result);
+    }
+
+    @Test
+    public void testBoolOrOperation() {
+        //*
+        // Verifica que OP_BOOLOR retorne 1 cuando al menos un valor es verdadero.
+        // @author Junior Lancerio
+        //  */
+        List<Item> script = new ArrayList<>();
+
+        script.add(new Item(OpCode.OP_0));
+        script.add(new Item(OpCode.OP_1));
+        script.add(new Item(OpCode.OP_BOOLOR));
+
+        ScriptInterpreter interpreter = new ScriptInterpreter(script);
+        boolean result = interpreter.execute();
+
+        assertTrue(result);
+    }
+
+    @Test
+    public void testAddOperation() {
+        //*
+        // Verifica que OP_ADD sume correctamente los dos elementos superiores.
+        // @author Junior Lancerio
+        //  */
+        List<Item> script = new ArrayList<>();
+
+        script.add(new Item(new byte[]{2}));
+        script.add(new Item(new byte[]{3}));
+        script.add(new Item(OpCode.OP_ADD));
+
+        ScriptInterpreter interpreter = new ScriptInterpreter(script);
+        boolean result = interpreter.execute();
+
+        assertTrue(result);
+    }
+
+    @Test
+    public void testSubOperation() {
+        //*
+        // Verifica que OP_SUB calcule correctamente la diferencia entre los elementos.
+        // @author Junior Lancerio
+        //  */
+        List<Item> script = new ArrayList<>();
+
+        script.add(new Item(new byte[]{5}));
+        script.add(new Item(new byte[]{3}));
+        script.add(new Item(OpCode.OP_SUB));
+
+        ScriptInterpreter interpreter = new ScriptInterpreter(script);
+        boolean result = interpreter.execute();
+
+        assertTrue(result);
+    }
+    @Test
     public void testOpDupAndEqual() {
 
         List<Item> script = new ArrayList<>();
