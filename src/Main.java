@@ -42,7 +42,7 @@ public class Main {
 
         script.add(new Item(OpCode.OP_ENDIF));
 
-        // Ejemplo extra de hash 
+        // Ejemplo extra
         script.add(new Item(new byte[]{9,9,9}));
         script.add(new Item(OpCode.OP_SHA256));
 
