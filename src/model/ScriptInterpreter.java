@@ -260,6 +260,7 @@ public class ScriptInterpreter {
     }
 
     private void requireStackSize(int size) {
+        //*Maneja el error de pila, donde se requiere un mínimo de elementos en la pila */
         if (stack.size() < size) {
             throw new RuntimeException("Stack underflow");
         }
