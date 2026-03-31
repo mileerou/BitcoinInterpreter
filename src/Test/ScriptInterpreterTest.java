@@ -13,14 +13,14 @@ public class ScriptInterpreterTest {
 
         List<Item> script = new ArrayList<>();
 
-        script.add(new Item(OpCode.OP_1));
-        script.add(new Item(OpCode.OP_DUP));
-        script.add(new Item(OpCode.OP_EQUAL));
+        script.add(new Item(OpCode.OP_1)); //mete 1
+        script.add(new Item(OpCode.OP_DUP)); //lo duplica
+        script.add(new Item(OpCode.OP_EQUAL)); //compara valores
 
         ScriptInterpreter interpreter = new ScriptInterpreter(script);
-        boolean result = interpreter.execute();
+        boolean result = interpreter.execute(); //guardar resultado
 
-        assertTrue(result);
+        assertTrue(result); //verifica si es verdadero
     }
 
     @Test
@@ -35,7 +35,7 @@ public class ScriptInterpreterTest {
         ScriptInterpreter interpreter = new ScriptInterpreter(script);
         boolean result = interpreter.execute();
 
-        assertFalse(result);
+        assertFalse(result); //devuelve falso porque 1 no es igual a 0, por lo que OP_EQUALVERIFY debería fallar y terminar la ejecución con un resultado falso.    
     }
 
     @Test
@@ -43,7 +43,7 @@ public class ScriptInterpreterTest {
 
         List<Item> script = new ArrayList<>();
 
-        byte[] data = new byte[]{10, 20, 30, 40};
+        byte[] data = new byte[]{10, 20, 30, 40}; //simulacion de datos
 
         script.add(new Item(data));
         script.add(new Item(OpCode.OP_HASH160));
