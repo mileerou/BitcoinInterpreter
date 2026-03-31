@@ -182,6 +182,69 @@ public class ScriptInterpreter {
                 stack.push(new byte[]{(byte) diff});
                 break;
 
+            case OP_NUMEQUALVERIFY:
+                //*
+                // Requiere al menos dos elementos en la pila. Verifica que los dos elementos superiores
+                // sean numéricamente iguales; si no, el script falla.
+                // @author Camila Da Silva
+                //  */
+                requireStackSize(2);
+                byte[] neqA = stack.pop();
+                byte[] neqB = stack.pop();
+                if ((neqA[0] & 0xFF) != (neqB[0] & 0xFF)) {
+                    throw new RuntimeException("OP_NUMEQUALVERIFY failed");
+                }
+                break;
+            
+            case OP_LESSTHAN:
+                //*
+                // Requiere al menos dos elementos en la pila. Empuja 1 si el segundo elemento
+                // es menor que el elemento superior; de lo contrario, empuja 0.
+                // @author Camila Da Silva
+                //  */
+                requireStackSize(2);
+                byte[] ltTop = stack.pop();
+                byte[] ltSecond = stack.pop();
+                stack.push((ltSecond[0] & 0xFF) < (ltTop[0] & 0xFF) ? new byte[]{1} : new byte[]{0});
+                break;
+
+            case OP_GREATERTHAN:
+                //*
+                // Requiere al menos dos elementos en la pila. Empuja 1 si el segundo elemento
+                // es mayor que el elemento superior, sino, empuja 0.
+                // @author Camila Da Silva
+                //  */
+                requireStackSize(2);
+                byte[] gtTop = stack.pop();
+                byte[] gtSecond = stack.pop();
+                stack.push((gtSecond[0] & 0xFF) > (gtTop[0] & 0xFF) ? new byte[]{1} : new byte[]{0});
+                break;
+
+            case OP_LESSTHANOREQUAL:
+                //*
+                // Requiere al menos dos elementos en la pila. Empuja 1 si el segundo elemento
+                // es menor o igual que el elemento superior, de lo contrario, empuja 0.
+                // @author Camila Da Silva
+                //  */
+                requireStackSize(2);
+                byte[] lteTop = stack.pop();
+                byte[] lteSecond = stack.pop();
+                stack.push((lteSecond[0] & 0xFF) <= (lteTop[0] & 0xFF) ? new byte[]{1} : new byte[]{0});
+                break;
+
+            case OP_GREATERTHANOREQUAL:
+                //*
+                // Requiere al menos dos elementos en la pila. Empuja 1 si el segundo elemento
+                // es mayor o igual que el elemento superior, de lo contrario, empuja 0.
+                // @author Camila Da Silva
+                //  */
+                requireStackSize(2);
+                byte[] gteTop = stack.pop();
+                byte[] gteSecond = stack.pop();
+                stack.push((gteSecond[0] & 0xFF) >= (gteTop[0] & 0xFF) ? new byte[]{1} : new byte[]{0});
+                break;
+
+            
             case OP_IF:
                 //*
                 // Requiere al menos un elemento en la pila. Evalúa si es distinto de 0 para ejecutar el bloque IF.
@@ -193,6 +256,20 @@ public class ScriptInterpreter {
                 controlStack.push(ejecutando);
                 ejecutando = ejecutando && resultadoIf;
                 break;
+
+            case OP_NOTIF:
+                //*
+                // Requiere al menos un elemento en la pila. Evalúa si es igual a 0 para ejecutar
+                // el bloque; es el inverso lógico de OP_IF.
+                // @author Camila Da Silva
+                //  */
+                requireStackSize(1);
+                byte[] condicionNotif = stack.pop();
+                boolean resultadoNotif = condicionNotif[0] == 0;
+                controlStack.push(ejecutando);
+                ejecutando = ejecutando && resultadoNotif;
+                break;
+
 
             case OP_ELSE:
                 //*
